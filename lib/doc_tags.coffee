@@ -120,6 +120,15 @@ module.exports = DOC_TAGS =
     #
     # @return {Object}
     parseValue:  (value) ->
+      if value[0] != '{'
+        return {
+          types: ['unknown'],
+          isOptional: false,
+          varName: value,
+          isSubParam: false,
+          defaultValue: undefined,
+          description: '',
+        }
       parts = collapse_space(value).match /^\{([^\}]+)\}\s+(\[?)([\w\.\$]+)(?:=([^\s\]]+))?(\]?)\s*(.*)$/
       types:        (parts[1]?.split /\|{1,2}/g)
       isOptional:   (parts[2] == '[' and parts[5] == ']')
@@ -180,6 +189,11 @@ module.exports = DOC_TAGS =
   'return':
     section:     'returns'
     parseValue:  (value) ->
+      if value[0] != '{'
+        return {
+          types: ['unknown'],
+          description: value
+        }
       parts = collapse_space(value).match /^\{([^\}]+)\}\s*(.*)$/
       types:       parts[1].split /\|{1,2}/g
       description: parts[2]
@@ -190,6 +204,11 @@ module.exports = DOC_TAGS =
   throw:
     section:     'returns'
     parseValue:  (value) ->
+      if value[0] != '{'
+        return {
+          types: ['unknown'],
+          description: value
+        }
       parts = collapse_space(value).match /^\{([^\}]+)\}\s*(.*)$/
       types:       parts[1].split /\|{1,2}/g
       description: parts[2]
